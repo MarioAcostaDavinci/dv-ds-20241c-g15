@@ -20,7 +20,7 @@ public enum TipoPrenda {
 		this.descripcion = descripcion;
 	}
 	
-	private String getDescripcion() {
+	public String getDescripcion() {
 		return descripcion;
 	}
 	
