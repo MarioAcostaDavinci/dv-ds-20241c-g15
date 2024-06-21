@@ -1,3 +1,4 @@
+
 INSERT INTO prendas
 (prd_descripcion,
 prd_precio_base,

@@ -1,4 +1,5 @@
---
+
+
 -- Drop Table structure for table ventas_tarjeta
 --
 DROP TABLE IF EXISTS ventas_tarjeta;
