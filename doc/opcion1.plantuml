@@ -1,0 +1,43 @@
+@startuml
+Title Diagrama de clases Tienda Ropita
+class Prenda {
+	Long id
+	TipoPrenda tipo
+	BigDecimal precioBase
+	EstadoPrenda estado
+	EstadoPrendaStrategy estadoEstrategia
+	
+	precioVenta()
+}
+note left of Prenda::precioVenta
+Tenemos un gran if donde por el estado de la prenda hacemos
+si estado es NUEVA
+entonces devolvemos el valor del precio base
+sino si estado el PROMOCION entonces
+devolvemos el valor del precio base menos
+la resta de un valor fijo decidido por el usuario
+sino si estado LIQUIDACION entonces
+devolvemos el valor del precio base menos
+un 50% del valor del producto
+end note
+class PrendaConfig{
+	valorPromo
+	procentajeLiquidacion
+}
+enum TipoPrenda {
+	SACO,
+	PANTALON,
+	CAMISA
+}
+enum EstadoPrenda {
+	NUEVA,
+	LIQUIDACIÓN,
+	PROMOCION
+}
+class Cliente {
+}
+class Venta {
+}
+Prenda --right TipoPrenda
+Prenda --down EstadoPrenda
+@enduml

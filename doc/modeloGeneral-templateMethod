@@ -1,0 +1,134 @@
+@startuml
+Title Diagrama de clases Tienda Ropita
+note as N1
+las clases pintadas de naranja
+son las que van a ser el modelo o
+dominio inicial
+end note
+class Prenda #back:orange{
+	id:Long
+	tipo:TipoPrenda
+	precioBase:BigDecimal
+	estado:EstadoPrenda
+	estadoEstrategia:EstadoPrendaStrategy
+	
+	precioVenta()
+}
+note left of Prenda::precioVenta
+prenda.precioVenta() {
+	estadoEstrategia.precioVenta()
+}
+end note
+class PrendaConfig{
+	valorPromo:BigDecimal
+	procentajeLiquidacion:BigDecimal
+}
+enum TipoPrenda #back:orange{
+	SACO,
+	PANTALON,
+	CAMISA
+}
+enum EstadoPrenda {
+	NUEVA,
+	LIQUIDACIÓN,
+	PROMOCION
+}
+interface EstadoPrendaStrategy {
+	precioVenta()
+}
+class PrendaNueva {
+	precioVenta()
+}
+class PrendaPromocion{
+	valor:BigDecimal
+	
+	PrendaPromocion(valor)
+	precioVenta()
+}
+class PrendaLiquidacion {
+	procentaje:BigDecimal
+	PrendaLiquidacion(procentaje)
+	precioVenta()
+}
+class Cliente #back:orange{
+	id:Long
+	nombre:String
+	apellido:String
+}
+abstract class Venta #back:orange{
+	id:Long
+	fecha:Date
+	cliente:Cliente
+	items:List<ItemVenta>
+	precioTotal:BigDecimal
+	
+	calcularPrecioTotal()
+	{abstract} descuento(total)
+	{abstract} recargo(total)
+}
+note right of Venta::calcularPrecioTotal
+Esta es la definición del Patron Template Method
+total = la sumatoria de todos los items.precioItem()
+desc = descuento(total)
+rec = recargo(total)
+precioTotal =  total - desc + rec
+end note
+class VentaEfectivo #back:orange{
+	descuento(total)
+	recargo(total)
+}
+note bottom of VentaEfectivo
+descuento retorna 10% del total
+recargo retorna el total
+end note
+class VentaTarjeta #back:orange{
+	cantidadCuotas:Integer
+	coeficiente:BigDecimal
+	
+	descuento(total)
+	recargo(total)
+}
+note bottom of VentaTarjeta
+descuento retorna total
+recargo retorna (cantidadCoutas * coeficiente)
+end note
+class VentaMercadoPago {
+	
+	descuento(total)
+	recargo(total)
+}
+class ItemVenta #back:orange {
+	id:Long
+	prenda:Prenda
+	precioVenta:BigDecimal
+	cantidad:Integer
+	
+	precioItem()
+}
+class Tienda {
+	ventas:List<Ventas>
+	
+	gananciaDia(fecha)
+}
+note left of Tienda::gananciaDia
+gananciaDia = sumatoria de venta.precioTotal
+para las ventas de una fecha en particular
+end note
+note left of ItemVenta::precioVenta
+precioVenta = prenda.precioVenta()
+end note
+Prenda --right TipoPrenda
+Prenda --right  EstadoPrenda
+Prenda --up PrendaConfig
+Prenda -- EstadoPrendaStrategy
+EstadoPrendaStrategy <|-- PrendaNueva
+EstadoPrendaStrategy <|-- PrendaPromocion
+EstadoPrendaStrategy <|-- PrendaLiquidacion
+Venta --left Cliente
+Venta --left ItemVenta
+ItemVenta -- Prenda
+Venta <|-- VentaEfectivo
+Venta <|-- VentaTarjeta
+Venta <|-- VentaMercadoPago
+Tienda -- Venta
+@enduml

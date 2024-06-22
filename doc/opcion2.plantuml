@@ -1,0 +1,50 @@
+@startuml
+Title Diagrama de clases Tienda Ropita
+class Prenda {
+	Long id
+	TipoPrenda tipo
+	BigDecimal precioBase
+	EstadoPrenda estado
+	EstadoPrendaStrategy estadoEstrategia
+	
+	precioVenta()
+}
+class PrendaConfig{
+	valorPromo
+	procentajeLiquidacion
+}
+enum TipoPrenda {
+	SACO,
+	PANTALON,
+	CAMISA
+}
+enum EstadoPrenda {
+	NUEVA,
+	LIQUIDACIÓN,
+	PROMOCION
+}
+class PrendaNueva {
+	precioVenta()
+}
+class PrendaPromocion{
+	BigDecimal valor
+	
+	PrendaPromocion(valor)
+	precioVenta()
+}
+class PrendaLiquidacion {
+	BigDecimal procentaje
+	PrendaLiquidacion(procentaje)
+	precioVenta()
+}
+class Cliente {
+}
+class Venta {
+}
+Prenda --right TipoPrenda
+Prenda --left EstadoPrenda
+Prenda --up PrendaConfig
+Prenda <|-- PrendaNueva
+Prenda <|-- PrendaPromocion
+Prenda <|-- PrendaLiquidacion
+@enduml
